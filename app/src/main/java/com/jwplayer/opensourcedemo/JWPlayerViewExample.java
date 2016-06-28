@@ -12,10 +12,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.cast.CastManager;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class JWPlayerViewExample extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener {
 
@@ -59,13 +68,42 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		// Instantiate the JW Player event handler class
 		mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
 
-		// Load a media source
-		PlaylistItem pi = new PlaylistItem.Builder()
-				.file("http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8")
-				.title("BipBop")
-				.description("A video player testing video.")
-				.build();
-		mPlayerView.load(pi);
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = MyApplication.getPlayerUrl();
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        String m3u8Url = "";
+                        JSONObject mainResponseObject = null;
+                        try {
+                            mainResponseObject = new JSONObject(response.toString());
+                            m3u8Url = mainResponseObject.getString("url");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Load a media source
+                        PlaylistItem pi = new PlaylistItem.Builder()
+                                .file(m3u8Url)
+                                .title("BipBop")
+                                .description("A video player testing video.")
+                                .build();
+                        mPlayerView.load(pi);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("VIDEO_URL_GETTER", "Error with the request.");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
 
 		// Get a reference to the CastManager
 		mCastManager = CastManager.getInstance();
@@ -150,4 +188,5 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 				return super.onOptionsItemSelected(item);
 		}
 	}
+
 }

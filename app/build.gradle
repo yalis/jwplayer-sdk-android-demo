@@ -2,7 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
 	compileSdkVersion 23
-	buildToolsVersion "23.0.1"
+	buildToolsVersion "23.0.3"
+
+    packagingOptions {
+        exclude 'jsr305_annotations/Jsr305_annotations.gwt.xml'
+    }
 
 	defaultConfig {
 		applicationId "com.jwplayer.opensourcedemo"
@@ -20,9 +24,11 @@ android {
 }
 
 dependencies {
-	compile fileTree(include: ['*.jar'], dir: 'libs')
-	testCompile 'junit:junit:4.12'
-	compile 'com.android.support:appcompat-v7:23.1.0'
-	compile 'com.android.support:design:23.3.0'
-	compile project(':CastCompanionLibrary-android')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.volley:volley:1.0.0'
+    compile project(':CastCompanionLibrary-android')
+    compile project(':jwplayer-android-sdk-2.3.0+155')
 }

@@ -1,1 +1,1 @@
-include ':app', ':CastCompanionLibrary-android'
+include ':app', ':CastCompanionLibrary-android', ':jwplayer-android-sdk-2.3.0+155'

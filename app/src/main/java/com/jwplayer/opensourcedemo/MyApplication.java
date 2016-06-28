@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.longtailvideo.jwplayer.cast.CastManager;
 
+
 public class MyApplication extends Application {
 
     @Override
@@ -14,4 +15,9 @@ public class MyApplication extends Application {
         // issues with garbage collection.
         CastManager.initialize(this);
     }
+
+    public static String getPlayerUrl() {
+        return "THE PLAYER URL HERE";
+    }
+
 }
